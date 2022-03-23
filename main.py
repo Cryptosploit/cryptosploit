@@ -7,8 +7,6 @@ def main():
     while True:
         try:
             command = get_command()
-            if command == "exit":
-                return
             command, args = parse_command(command)
             command.exec(*args)
         except KeyboardInterrupt:

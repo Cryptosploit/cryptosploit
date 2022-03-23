@@ -23,7 +23,7 @@ def search_executor(name):
 
 
 @message_handler
-def exit_executor(name):
+def exit_executor():
     yield "Bye bye! UwU"
     exit(0)
 
@@ -35,11 +35,11 @@ def set_executor(name, value):
 
 
 @message_handler
-def options_executor(name):
+def options_executor():
     yield "show options"
 
 @message_handler
-def run_executor(name):
+def run_executor():
     # find modules
     yield "Successful"
 

@@ -5,17 +5,12 @@ from . import message_handler
 
 
 class Command:
-    def __init__(self, name, args_amount, info, executor):
-        self.name = name
+    def __init__(self, args_amount, executor):
         self.args_amount = args_amount
-        self.info = info
         self.executor = executor
 
     def exec(self, *args):
         self.executor(*args)
-
-    def __str__(self):
-        return self.info
 
 
 @message_handler
@@ -24,7 +19,31 @@ def use_executor(path):
     yield "No such module"
 
 
-use_command = Command("use", 1, "", use_executor)
+@message_handler
+def search_executor(name):
+    # find modules
+    yield "No such module"
+
+
+@message_handler
+def exit_executor(name):
+    yield "Bye bye! UwU"
+    exit(0)
+
+
+@message_handler
+def set_executor(name, value):
+    # find modules
+    yield f"{name} -> {value}"
+
+
+@message_handler
+def run_executor(name):
+    # find modules
+    yield "Successful"
+
+
+use_command = Command(1, use_executor)
 
 allowed_commands = {
     "use": use_command,

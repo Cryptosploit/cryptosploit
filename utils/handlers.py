@@ -1,5 +1,5 @@
 #!./venv/bin/python
-from .commands import allowed_commands
+from .commands import allowed_commands, bash_executor, Command
 from .exceptions import ArgError
 
 
@@ -15,8 +15,8 @@ def parse_command(command: str) -> tuple:
     command, *args = command.split()
     err_msg = ""
     if command not in allowed_commands.keys():
-        # TODO: run subprocess with command
-        err_msg = "Unknown command"
+        bash_executor(command, *args)
+        return Command(0,lambda: None), args
     else:
         command = allowed_commands[command]
         if len(args) > command.args_amount:

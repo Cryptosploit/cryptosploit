@@ -1,4 +1,5 @@
 from . import message_handler
+from subprocess import Popen, PIPE
 
 
 class Command:
@@ -38,10 +39,21 @@ def set_executor(name, value):
 def options_executor():
     yield "show options"
 
+
 @message_handler
 def run_executor():
     # find modules
     yield "Successful"
+
+
+@message_handler
+def bash_executor(*command):
+    proc = Popen(command, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = proc.communicate()
+    if proc.returncode == 127:
+        yield "Unknown command"
+    else:
+        yield stdout.decode() + stderr.decode()
 
 
 allowed_commands = {

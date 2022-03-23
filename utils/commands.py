@@ -19,51 +19,56 @@ def empty(*command):
 EMPTY_COMMAND = Command(0, empty)
 
 
-@message_handler
+@message_handler()
 def use_executor(path):
     # check module exists
     yield "No such module"
 
 
-@message_handler
+@message_handler()
 def search_executor(name):
     # find modules
     yield "No such module"
 
 
-@message_handler
+@message_handler()
 def exit_executor():
     yield "Bye bye! UwU"
     exit(0)
 
 
-@message_handler
+@message_handler()
 def set_executor(name, value):
     # find modules
     yield f"{name} -> {value}"
 
 
-@message_handler
+@message_handler()
 def options_executor():
     yield "show options"
 
 
-@message_handler
+@message_handler()
 def run_executor():
     # find modules
     yield "Successful"
 
 
-@message_handler
+@message_handler(end="")
 def bash_executor(*command):
     command = " ".join(command)
-    yield f"[*] Executing '{command}'"
-    proc = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
-    stdout, stderr = proc.communicate()
-    if proc.returncode == 127:
-        yield "[!] Unknown command"
+    yield f"[*] Executing '{command}'\n"
+    proc = Popen(command, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
+    for line in iter(proc.stdout.readline, ""):
+        yield line
+    proc.stdout.close()
+    return_code = proc.wait()
+    if return_code == 127:
+        yield "[!] Unknown command\n"
     else:
-        yield stdout.decode() + stderr.decode()
+        for line in iter(proc.stderr.readline, ""):
+            yield line
+        proc.stderr.close()
 
 
 allowed_commands = {

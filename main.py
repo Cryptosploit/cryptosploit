@@ -1,10 +1,10 @@
 #!./venv/bin/python
+from utils import message_handler
 from utils.exceptions import CryptoException
 from utils.handlers import parse_command, get_command
-from utils import message_handler
 
 
-@message_handler
+@message_handler()
 def main():
     while True:
         try:

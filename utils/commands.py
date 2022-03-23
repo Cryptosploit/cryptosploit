@@ -56,10 +56,12 @@ def run_executor():
 
 @message_handler
 def bash_executor(*command):
-    proc = Popen(" ".join(command), stdout=PIPE, stderr=PIPE, shell=True)
+    command = " ".join(command)
+    yield f"[*] Executing '{command}'"
+    proc = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = proc.communicate()
     if proc.returncode == 127:
-        yield "Unknown command"
+        yield "[!] Unknown command"
     else:
         yield stdout.decode() + stderr.decode()
 

@@ -20,9 +20,9 @@ def parse_command(command: str) -> tuple:
     else:
         command = allowed_commands[command]
         if len(args) > command.args_amount:
-            err_msg = "Too many args"
+            err_msg = "[!] Too many args"
         elif len(args) < command.args_amount:
-            err_msg = "Not enough args"
+            err_msg = "[!] Not enough args"
     if not err_msg:
         return command, args
     else:

@@ -1,9 +1,6 @@
 from . import message_handler
 
 
-# TODO: make executors
-
-
 class Command:
     def __init__(self, args_amount, executor):
         self.args_amount = args_amount
@@ -38,18 +35,20 @@ def set_executor(name, value):
 
 
 @message_handler
+def options_executor(name):
+    yield "show options"
+
+@message_handler
 def run_executor(name):
     # find modules
     yield "Successful"
 
 
-use_command = Command(1, use_executor)
-
 allowed_commands = {
-    "use": use_command,
-    "search": 1,
-    "exit": 0,
-    "set": 2,
-    "options": 0,
-    "run": 0
+    "use": Command(1, use_executor),
+    "search": Command(1, search_executor),
+    "exit": Command(0, exit_executor),
+    "set": Command(2, set_executor),
+    "options": Command(0, options_executor),
+    "run": Command(0, run_executor)
 }

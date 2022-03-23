@@ -1,5 +1,5 @@
 #!./venv/bin/python
-from .commands import allowed_commands, bash_executor, Command
+from .commands import allowed_commands, bash_executor, EMPTY_COMMAND
 from .exceptions import ArgError
 
 
@@ -16,7 +16,7 @@ def parse_command(command: str) -> tuple:
     err_msg = ""
     if command not in allowed_commands.keys():
         bash_executor(command, *args)
-        return Command(0,lambda: None), args
+        return EMPTY_COMMAND, args
     else:
         command = allowed_commands[command]
         if len(args) > command.args_amount:

@@ -1,5 +1,6 @@
-from . import message_handler
 from subprocess import Popen, PIPE
+
+from . import message_handler
 
 
 class Command:
@@ -9,6 +10,13 @@ class Command:
 
     def exec(self, *args):
         self.executor(*args)
+
+
+def empty(*command):
+    ...
+
+
+EMPTY_COMMAND = Command(0, empty)
 
 
 @message_handler
@@ -48,7 +56,7 @@ def run_executor():
 
 @message_handler
 def bash_executor(*command):
-    proc = Popen(command, stdout=PIPE, stderr=PIPE)
+    proc = Popen(" ".join(command), stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = proc.communicate()
     if proc.returncode == 127:
         yield "Unknown command"

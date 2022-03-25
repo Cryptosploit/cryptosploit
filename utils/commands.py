@@ -4,6 +4,9 @@ from . import message_handler, change_cwd
 
 
 class Command:
+    """
+    Class of custom crsconsole commands
+    """
     def __init__(self, args_amount, executor):
         self.args_amount = args_amount
         self.executor = executor
@@ -54,7 +57,7 @@ def change_directory(path: str):
 
 
 @message_handler(end="")
-def run_command(command: str):
+def run_shell_command(command: str):
     proc = Popen(command, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True)
     yield f"[*] Executing '{command}'\n"
     for line in iter(proc.stdout.readline, ""):
@@ -77,4 +80,4 @@ allowed_commands = {
     "run": Command(0, run_executor),
     "cd": Command(1, change_directory)
 }
-BashExecutor = Command(-1, run_command)
+BashExecutor = Command(-1, run_shell_command)

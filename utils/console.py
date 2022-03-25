@@ -6,6 +6,9 @@ from .handlers import parse_command
 
 
 class CRSConsole(Cmd):
+    """
+    Class of main console
+    """
     prompt = "crsconsole> "
 
     def __init__(self, intro, completekey='tab', stdin=None, stdout=None):

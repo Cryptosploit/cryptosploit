@@ -4,6 +4,9 @@ from .exceptions import PathError, CryptoException
 
 
 def message_handler(end="\n"):
+    """
+    Main decorator for output
+    """
     def wrap(func):
         def inner(*args, **kwargs):
             for line in func(*args, **kwargs):

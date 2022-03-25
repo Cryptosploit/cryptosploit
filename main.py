@@ -1,20 +1,10 @@
 #!./venv/bin/python
-from utils import message_handler
-from utils.exceptions import CryptoException
-from utils.handlers import parse_command, get_command
+from utils.console import CRSConsole
 
 
-@message_handler()
 def main():
-    while True:
-        try:
-            command = get_command()
-            command, args = parse_command(command)
-            command.exec(*args)
-        except KeyboardInterrupt:
-            yield "\nType 'exit' to quit"
-        except CryptoException as err:
-            yield str(err)
+    console = CRSConsole(intro="Wellcome to CryptoSploit <3")
+    console.cmdloop()
 
 
 if __name__ == "__main__":

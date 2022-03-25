@@ -1,5 +1,6 @@
 from os import path, chdir
-from .exceptions import PathError
+
+from .exceptions import PathError, CryptoException
 
 
 def message_handler(end="\n"):

@@ -2,13 +2,7 @@
 from .commands import allowed_commands, BashExecutor
 from .exceptions import ArgError
 
-
 # TODO: add a handler of module funcs
-
-
-def get_command():
-    command = input("crsconsole> ")
-    return command
 
 
 def parse_command(command: str) -> tuple:

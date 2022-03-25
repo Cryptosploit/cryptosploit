@@ -1,8 +1,5 @@
 from subprocess import Popen, PIPE
-from os import path
-from .exceptions import PathError
-from . import BS, message_handler
-
+from . import message_handler, change_cwd
 
 
 class Command:
@@ -12,13 +9,6 @@ class Command:
 
     def exec(self, *args):
         self.executor(*args)
-
-
-def empty(*command):
-    ...
-
-
-EMPTY_COMMAND = Command(0, empty)
 
 
 @message_handler()
@@ -55,10 +45,26 @@ def run_executor():
     # find modules
     yield "Successful"
 
+
 @message_handler()
-def change_directory(dir):
-    yield f"[*] Executing cd {dir}"
-    BS.change_cwd(dir)
+def change_directory(path: str):
+    yield f"[*] Executing cd {path}"
+    change_cwd(path)
+
+
+@message_handler(end="")
+def run_command(command: str):
+    proc = Popen(command, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True)
+    yield f"[*] Executing '{command}'\n"
+    for line in iter(proc.stdout.readline, ""):
+        yield line
+    return_code = proc.wait()
+    if return_code == 127:
+        yield "[!] Unknown command\n"
+    else:
+        for line in iter(proc.stderr.readline, ""):
+            yield line
+        proc.stderr.close()
 
 
 allowed_commands = {
@@ -70,3 +76,4 @@ allowed_commands = {
     "run": Command(0, run_executor),
     "cd": Command(1, change_directory)
 }
+BashExecutor = Command(-1, run_command)

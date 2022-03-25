@@ -1,6 +1,7 @@
 .idea
 *.iml
 out
+TODO/
 gen
 __pycache__/
 *.py[cod]

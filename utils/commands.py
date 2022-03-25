@@ -1,6 +1,8 @@
 from subprocess import Popen, PIPE
+from os import path
+from .exceptions import PathError
+from . import BS, message_handler
 
-from . import message_handler
 
 
 class Command:
@@ -53,22 +55,10 @@ def run_executor():
     # find modules
     yield "Successful"
 
-
-@message_handler(end="")
-def bash_executor(*command):
-    command = " ".join(command)
-    yield f"[*] Executing '{command}'\n"
-    proc = Popen(command, stdout=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
-    for line in iter(proc.stdout.readline, ""):
-        yield line
-    proc.stdout.close()
-    return_code = proc.wait()
-    if return_code == 127:
-        yield "[!] Unknown command\n"
-    else:
-        for line in iter(proc.stderr.readline, ""):
-            yield line
-        proc.stderr.close()
+@message_handler()
+def change_directory(dir):
+    yield f"[*] Executing cd {dir}"
+    BS.change_cwd(dir)
 
 
 allowed_commands = {
@@ -77,5 +67,6 @@ allowed_commands = {
     "exit": Command(0, exit_executor),
     "set": Command(2, set_executor),
     "options": Command(0, options_executor),
-    "run": Command(0, run_executor)
+    "run": Command(0, run_executor),
+    "cd": Command(1, change_directory)
 }

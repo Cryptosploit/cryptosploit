@@ -1,5 +1,5 @@
 #!./venv/bin/python
-from utils.console import CRSConsole
+from src.console import CRSConsole
 
 
 # TODO: Fill CS class; create a list of modules; start module writing;

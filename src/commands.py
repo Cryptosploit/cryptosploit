@@ -2,7 +2,7 @@ from inspect import getfullargspec
 from os import path, chdir
 from subprocess import Popen, PIPE
 
-from .exceptions import PathError
+from .exceptions import ArgError, PathError
 
 allowed_commands = dict()
 
@@ -28,6 +28,8 @@ class Command:
         self.args_amount = len(getfullargspec(executor).args)
 
     def exec(self, *args):
+        if len(args) != self.args_amount:
+            raise ArgError(f"[!] Error: {self.args_amount} arguments required")
         return self.executor(*args)
 
 
@@ -84,7 +86,7 @@ def cd_executor(new_path: str):
 
 def run_shell_command(command: str):
     proc = Popen(command, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True)
-    print(f"[*] Executing '{command}'\n")
+    print(f"[*] Executing '{command}'")
     for line in iter(proc.stdout.readline, ""):
         print(line, end="")
     return_code = proc.wait()

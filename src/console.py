@@ -1,6 +1,6 @@
 from cmd import Cmd
 
-from .commands import allowed_commands, BashExecutor
+from . import allowed_commands, BashExecutor
 from .exceptions import CryptoException
 
 

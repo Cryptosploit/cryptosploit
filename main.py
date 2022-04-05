@@ -5,7 +5,7 @@ from src.console import CRSConsole
 # TODO: Fill CS class; create a list of modules; start module writing;
 
 def main():
-    console = CRSConsole(intro="Wellcome to CryptoSploit <3")
+    console = CRSConsole()
     console.cmdloop()
 
 

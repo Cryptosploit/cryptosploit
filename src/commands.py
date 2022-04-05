@@ -1,7 +1,21 @@
-from subprocess import Popen, PIPE
 from inspect import getfullargspec
+from os import path, chdir
+from subprocess import Popen, PIPE
 
-from . import message_handler, change_cwd
+from .exceptions import PathError
+
+allowed_commands = dict()
+
+
+def allow(name):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
+
+        allowed_commands[name] = Command(func)
+        return wrapper
+
+    return decorator
 
 
 class Command:
@@ -14,41 +28,58 @@ class Command:
         self.args_amount = len(getfullargspec(executor).args)
 
     def exec(self, *args):
-        self.executor(*args)
+        return self.executor(*args)
 
 
-def use_executor(path):
+@allow("use")
+def use_executor(module_path):
     # check module exists
     print("No such module")
+    return False
 
 
+@allow("search")
 def search_executor(name):
     # find modules
     print("No such module")
+    return False
 
 
+@allow("exit")
 def exit_executor():
     print("Bye bye! UwU")
-    exit(0)
+    return True
 
 
+@allow("set")
 def set_executor(name, value):
     # find modules
     print(f"{name} -> {value}")
+    return False
 
 
+@allow("options")
 def options_executor():
     print("show options")
+    return False
 
 
+@allow("run")
 def run_executor():
     # find modules
     print("Successful")
+    return False
 
 
-def cd_executor(path: str):
-    print(f"[*] Executing cd {path}")
-    change_cwd(path)
+@allow("cd")
+def cd_executor(new_path: str):
+    print(f"[*] Executing cd {new_path}")
+    cwd = path.abspath(new_path)
+    if path.exists(cwd):
+        chdir(cwd)
+    else:
+        raise PathError("[!] No such directory")
+    return False
 
 
 def run_shell_command(command: str):
@@ -63,16 +94,7 @@ def run_shell_command(command: str):
         for line in iter(proc.stderr.readline, ""):
             print(line, "\n")
         proc.stderr.close()
+    return False
 
-
-allowed_commands = {
-    "use": use_executor,
-    "search": search_executor,
-    "exit": exit_executor,
-    "set": set_executor,
-    "options": options_executor,
-    "run": run_executor,
-    "cd": cd_executor
-}
 
 BashExecutor = Command(run_shell_command)

@@ -1,6 +1,6 @@
 name,default_value,description
-mode,attack,"Mode of module working. May be attack/decrypt/encrypt"
+mode,attack,"Operation mode. May be attack/decrypt/encrypt"
 key,1,"Value of key"
 input,,"Initial string"
-alphabet,ABCDEFGHIJKLMNOPQRSTUVWXYZ,"Alphabet of cipher"
-contains,,"Used in attack mode, algo will search this substring. If value is empty string, all possible lines will be printed"
+alphabet,ABCDEFGHIJKLMNOPQRSTUVWXYZ,"Initial alphabet"
+contains,,"Used in attack mode, algo will search this substring. If value is an empty string, all possible lines will be printed"

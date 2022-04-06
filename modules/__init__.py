@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from os.path import dirname, join, exists
 from sys import modules
 
+from src.exceptions import ModuleError
+
 
 @dataclass()
 class Variable:
@@ -14,26 +16,17 @@ class Environment:
     def __init__(self):
         self.__vars = dict()
 
-    def __str__(self):
-        return str(self.__vars)
-
-    def add_var(self, name, default_value, description):
-        self.__vars[name] = Variable(default_value, description)
+    def get_var(self, name):
+        return self.__vars[name]
 
     def set_var(self, name, val):
         self.__vars[name].value = val
-
-    def get_var(self, name):
-        return self.__vars[name].value
-
-    def get_description(self, name):
-        return self.__vars[name].description
 
     def load_config(self, config_path):
         with open(config_path, newline="") as f:
             reader = DictReader(f, delimiter=",", quotechar="\"")
             for row in reader:
-                self.add_var(**row)
+                self.__vars[row["name"]] = Variable(row["default_value"], row["description"])
 
 
 class BaseModule:
@@ -49,3 +42,4 @@ class BaseModule:
             env = Environment()
             env.load_config(config_path)
             return env
+        raise ModuleError(f"No such file: {config_path}")

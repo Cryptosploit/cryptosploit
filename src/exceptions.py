@@ -1,6 +1,6 @@
 class CryptoException(Exception):
     """
-    Base application exception
+    Base application exception.
     """
 
 
@@ -13,4 +13,10 @@ class ArgError(CryptoException):
 class PathError(CryptoException):
     """
     Exception raised for errors in os paths.
+    """
+
+
+class ModuleError(CryptoException):
+    """
+    Exception raised for errors in modules.
     """

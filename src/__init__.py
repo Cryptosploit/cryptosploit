@@ -59,6 +59,7 @@ class CryptoSploit:
     @allow("use")
     def use_executor(module_path):
         # check module exists
+        #
         print("No such module")
         return False
 
@@ -78,6 +79,7 @@ class CryptoSploit:
     @staticmethod
     @allow("run")
     def run_executor():
+
         print("Successful")
         return False
 

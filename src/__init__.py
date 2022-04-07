@@ -66,7 +66,7 @@ class CryptoSploit:
     @staticmethod
     @allow("search")
     def search_executor(name):
-        # find modules
+
         print("No such module")
         return False
 

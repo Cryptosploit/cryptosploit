@@ -1,8 +1,9 @@
+from importlib import import_module
 from inspect import getfullargspec
 from os import path, chdir
 from subprocess import Popen, PIPE
 
-from .exceptions import ArgError, PathError
+from .exceptions import ArgError, PathError, ModuleError
 
 allowed_commands = dict()
 
@@ -53,14 +54,17 @@ class CryptoSploit:
     Framework class
     """
     module = None
-    variables = dict()
+    variables = None
 
     @staticmethod
     @allow("use")
-    def use_executor(module_path):
-        # check module exists
-        #
-        print("No such module")
+    def use_executor(module_path: str):
+        try:
+            CryptoSploit.module = import_module("cryptosploit_modules." + module_path.replace("/", ".")).module
+            CryptoSploit.variables = CryptoSploit.module.env
+            print("Module loaded successful")
+        except AttributeError:
+            raise ModuleError("No such module")
         return False
 
     @staticmethod
@@ -79,7 +83,7 @@ class CryptoSploit:
     @staticmethod
     @allow("run")
     def run_executor():
-
+        CryptoSploit.module.run()
         print("Successful")
         return False
 
@@ -88,7 +92,7 @@ class CryptoSploit:
     def set_executor(name, value):
         if name in CryptoSploit.variables:
             print(f"Setting {name} -> {value}")
-            CryptoSploit.variables[name] = value
+            CryptoSploit.variables.set_var(name, value)
         else:
             print("No such variable")
         return False

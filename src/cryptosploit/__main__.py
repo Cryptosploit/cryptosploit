@@ -1,5 +1,4 @@
-#!./venv/bin/python
-from src.console import CRSConsole
+from .console import CRSConsole
 
 
 # TODO: Fill CS class; create a list of modules; start module writing;
@@ -7,7 +6,3 @@ from src.console import CRSConsole
 def main():
     console = CRSConsole()
     console.cmdloop()
-
-
-if __name__ == "__main__":
-    main()

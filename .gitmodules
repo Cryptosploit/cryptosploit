@@ -1,3 +1,4 @@
+
 [submodule "cryptosploit_modules"]
 	path = cryptosploit_modules
-	url = https://github.com/y73n0k/cryptosploit_modules
+	url = https://github.com/y73n0k/cryptosploit_modules.git

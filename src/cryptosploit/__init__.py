@@ -84,7 +84,6 @@ class CryptoSploit:
     @allow("run")
     def run_executor():
         CryptoSploit.module.run()
-        print("Successful")
         return False
 
     @staticmethod

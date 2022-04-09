@@ -2,6 +2,8 @@ from importlib import import_module
 from inspect import getfullargspec
 from os import path, chdir
 from subprocess import Popen, PIPE
+from re import compile
+from pkgutil import walk_packages, get_loader
 
 from .exceptions import ArgError, PathError, ModuleError
 
@@ -62,16 +64,23 @@ class CryptoSploit:
         try:
             CryptoSploit.module = import_module("cryptosploit_modules." + module_path).module
             CryptoSploit.variables = CryptoSploit.module.env
-            print("Module loaded successful")
+            print("Module loaded successfully")
         except AttributeError:
             raise ModuleError("No such module")
         return False
 
     @staticmethod
     @allow("search")
-    def search_executor(pattern):
-
-        print("No such module")
+    def search_executor(name):
+        pattern = f".*{name}.*"
+        csmodule = get_loader("cryptosploit_modules")
+        modules = (name for _, name, _ in
+                   walk_packages(
+                       [path.dirname(csmodule.path)], csmodule.name + "."
+                   ))
+        r = compile(pattern)
+        found = list(map(lambda a: a.split(".", 1)[1], filter(r.match, modules)))
+        print("\n".join(found) if found else f"No results for {name}")
         return False
 
     @staticmethod
@@ -90,8 +99,8 @@ class CryptoSploit:
     @allow("set")
     def set_executor(name, value):
         if name in CryptoSploit.variables:
-            print(f"Setting {name} -> {value}")
             CryptoSploit.variables.set_var(name, value)
+            print(f"Setting {name} -> {value}")
         else:
             print("No such variable")
         return False

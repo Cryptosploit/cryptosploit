@@ -1,7 +1,7 @@
 .idea
 *.iml
 out
-TODO/
+test.py
 gen
 __pycache__/
 *.py[cod]

@@ -65,7 +65,7 @@ class CryptoSploit:
             CryptoSploit.module = import_module("cryptosploit_modules." + module_path).module
             CryptoSploit.variables = CryptoSploit.module.env
             print("Module loaded successfully")
-        except AttributeError:
+        except (AttributeError, ModuleNotFoundError):
             raise ModuleError("No such module")
         return False
 

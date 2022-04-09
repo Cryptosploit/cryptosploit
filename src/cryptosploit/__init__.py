@@ -60,7 +60,7 @@ class CryptoSploit:
     @allow("use")
     def use_executor(module_path: str):
         try:
-            CryptoSploit.module = import_module("cryptosploit_modules." + module_path.replace("/", ".")).module
+            CryptoSploit.module = import_module("cryptosploit_modules." + module_path).module
             CryptoSploit.variables = CryptoSploit.module.env
             print("Module loaded successful")
         except AttributeError:
@@ -69,7 +69,7 @@ class CryptoSploit:
 
     @staticmethod
     @allow("search")
-    def search_executor(name):
+    def search_executor(pattern):
 
         print("No such module")
         return False

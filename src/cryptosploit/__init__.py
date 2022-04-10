@@ -67,8 +67,10 @@ class CryptoSploit:
             CryptoSploit.variables = CryptoSploit.module.env
             CryptoSploit.console.prompt = f"crsconsole ({module_path})> "
             print("Module loaded successfully")
-        except (AttributeError, ModuleNotFoundError):
-            raise ModuleError("No such module")
+        except ModuleNotFoundError:
+            raise ModuleError("[!] No such module")
+        except AttributeError:
+            raise ModuleError("[!] Not a module")
         return False
 
     @staticmethod

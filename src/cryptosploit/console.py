@@ -2,6 +2,7 @@ from cmd import Cmd
 
 from . import allowed_commands, BashExecutor
 from .exceptions import CryptoException
+from .help import help_msg
 
 
 class CRSConsole(Cmd):
@@ -9,7 +10,7 @@ class CRSConsole(Cmd):
     Class of main console
     """
     prompt = "crsconsole> "
-    intro = "Wellcome to CryptoSploit <3"
+    intro = "Wellcome to CryptoSploit <3\nType help or ? to list commands.\n"
 
     def default(self, command: str) -> bool:
         try:
@@ -18,6 +19,10 @@ class CRSConsole(Cmd):
         except CryptoException as err:
             print(str(err))
             return False
+
+    def do_help(self, arg: str):
+        print(help_msg)
+        return False
 
     @staticmethod
     def parse_command(command: str) -> tuple:

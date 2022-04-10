@@ -5,7 +5,7 @@ from subprocess import Popen, PIPE
 from re import compile, error
 from pkgutil import walk_packages, get_loader
 
-from .exceptions import ArgError, PathError, ModuleError
+from .exceptions import ArgError, PathError, ModuleError, UnknownCommandError
 
 allowed_commands = dict()
 
@@ -37,13 +37,13 @@ class Command:
 
 
 def shell_executor(command: str):
-    proc = Popen(command, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True)
+    proc = Popen(command, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True, text=True)
     print(f"[*] Executing '{command}'")
     for line in iter(proc.stdout.readline, ""):
         print(line, end="")
     return_code = proc.wait()
     if return_code == 127:
-        print("[!] Unknown command")
+        raise UnknownCommandError("[!] Unknown command")
     else:
         for line in iter(proc.stderr.readline, ""):
             print(line, "\n")
@@ -65,7 +65,7 @@ class CryptoSploit:
         try:
             CryptoSploit.module = import_module("cryptosploit_modules." + module_path).module
             CryptoSploit.variables = CryptoSploit.module.env
-            CryptoSploit.console.prompt = f"crsconsole ({module_path})>"
+            CryptoSploit.console.prompt = f"crsconsole ({module_path})> "
             print("Module loaded successfully")
         except (AttributeError, ModuleNotFoundError):
             raise ModuleError("No such module")
@@ -107,9 +107,9 @@ class CryptoSploit:
             if name in CryptoSploit.variables:
                 CryptoSploit.variables.set_var(name, value)
                 print(f"Setting {name} -> {value}")
+                return False
             else:
-                print("No such variable")
-            return False
+                raise ArgError("No such variable")
         raise ModuleError("Module is not loaded")
 
     @staticmethod

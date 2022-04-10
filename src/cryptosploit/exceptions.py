@@ -20,3 +20,9 @@ class ModuleError(CryptoException):
     """
     Exception raised for errors in modules.
     """
+
+
+class UnknownCommandError(CryptoException):
+    """
+    Exception raised for unknown commands.
+    """

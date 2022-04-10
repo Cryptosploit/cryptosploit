@@ -2,6 +2,7 @@ from importlib.metadata import version
 from json import loads
 from urllib.request import urlopen
 
+from . import CryptoSploit
 from .console import CRSConsole
 
 
@@ -17,4 +18,5 @@ def check_update():
 def main():
     check_update()
     console = CRSConsole()
+    CryptoSploit.console = console
     console.cmdloop()

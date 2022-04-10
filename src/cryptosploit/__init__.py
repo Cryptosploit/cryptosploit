@@ -2,7 +2,7 @@ from importlib import import_module
 from inspect import getfullargspec
 from os import path, chdir
 from subprocess import Popen, PIPE
-from re import compile
+from re import compile, error
 from pkgutil import walk_packages, get_loader
 
 from .exceptions import ArgError, PathError, ModuleError
@@ -57,6 +57,7 @@ class CryptoSploit:
     """
     module = None
     variables = None
+    console = None
 
     @staticmethod
     @allow("use")
@@ -64,6 +65,7 @@ class CryptoSploit:
         try:
             CryptoSploit.module = import_module("cryptosploit_modules." + module_path).module
             CryptoSploit.variables = CryptoSploit.module.env
+            CryptoSploit.console.prompt = f"crsconsole ({module_path})>"
             print("Module loaded successfully")
         except (AttributeError, ModuleNotFoundError):
             raise ModuleError("No such module")
@@ -78,10 +80,13 @@ class CryptoSploit:
                    walk_packages(
                        [path.dirname(csmodule.path)], csmodule.name + "."
                    ))
-        r = compile(pattern)
-        found = list(map(lambda a: a.split(".", 1)[1], filter(r.match, modules)))
-        print("\n".join(found) if found else f"No results for {name}")
-        return False
+        try:
+            r = compile(pattern)
+            found = list(map(lambda a: a.split(".", 1)[1], filter(r.match, modules)))
+            print("\n".join(found) if found else f"No results for {name}")
+            return False
+        except error:
+            raise ArgError("Invalid regex")
 
     @staticmethod
     @allow("exit")

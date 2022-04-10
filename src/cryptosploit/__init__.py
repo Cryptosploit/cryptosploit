@@ -98,18 +98,22 @@ class CryptoSploit:
     @staticmethod
     @allow("set")
     def set_executor(name, value):
-        if name in CryptoSploit.variables:
-            CryptoSploit.variables.set_var(name, value)
-            print(f"Setting {name} -> {value}")
-        else:
-            print("No such variable")
-        return False
+        if CryptoSploit.variables:
+            if name in CryptoSploit.variables:
+                CryptoSploit.variables.set_var(name, value)
+                print(f"Setting {name} -> {value}")
+            else:
+                print("No such variable")
+            return False
+        raise ModuleError("Module is not loaded")
 
     @staticmethod
     @allow("get")
     def get_all_executor():
-        print(CryptoSploit.variables)
-        return False
+        if CryptoSploit.variables:
+            print(CryptoSploit.variables)
+            return False
+        raise ModuleError("Module is not loaded")
 
     @staticmethod
     @allow("cd")

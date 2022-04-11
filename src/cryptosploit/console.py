@@ -1,6 +1,6 @@
 from cmd import Cmd
 from importlib import import_module
-from os import path, chdir
+from os import path, chdir, listdir, getcwd
 from re import compile, error
 from subprocess import Popen, PIPE
 from pkgutil import walk_packages, get_loader
@@ -18,15 +18,28 @@ class CRSConsole(Cmd):
     prompt = "crsconsole> "
     intro = "Wellcome to CryptoSploit <3\nType help or ? to list commands.\n"
     module = None
+    modules_list = None
     variables = None
 
-    def preloop(self):
+    def load_modules(self):
+        csmodule = get_loader("cryptosploit_modules")
+        self.modules_list = list(map(lambda x: x.split(".", 1)[1], (name for _, name, _ in
+                                                                    walk_packages(
+                                                                        [path.dirname(csmodule.path)],
+                                                                        csmodule.name + "."
+                                                                    ))))
+
+    def check_update(self):
         local_version = version("cryptosploit_modules")
         # package_version = loads(urlopen("https://pypi.org/pypi/cryptosploit_modules/json").read())["info"]["version"]
         package_version = local_version
         if local_version != package_version:
             print("There is a new version of cryptosploit_modules, please run:")
             print("pip install cryptosploit_modules --upgrade")
+
+    def preloop(self):
+        self.check_update()
+        self.load_modules()
 
     def onecmd(self, line: str) -> bool:
         try:
@@ -82,19 +95,14 @@ class CRSConsole(Cmd):
         Example: search rot
         """
         pattern = f".*{name}.*"
-        csmodule = get_loader("cryptosploit_modules")
-        modules = (name for _, name, _ in
-                   walk_packages(
-                       [path.dirname(csmodule.path)], csmodule.name + "."
-                   ))
         try:
             r = compile(pattern)
-            found = list(map(lambda a: a.split(".", 1)[1], filter(r.match, modules)))
+            found = list(filter(r.match, self.modules_list))
             print("\n".join(found) if found else f"No results for {name}")
             return False
         except error:
             raise ArgError("Invalid regex")
-    
+
     def do_exit(self, arg):
         """
         Just an exit command.
@@ -116,15 +124,18 @@ class CRSConsole(Cmd):
         Set the value of a variable.
         Example: set ciphertext OwO
         """
-        name, value = arg.split(maxsplit=1)
-        if self.variables:
-            if name in self.variables:
-                self.variables.set_var(name, value)
-                print(f"Setting {name} -> {value}")
-                return False
-            else:
-                raise ArgError("No such variable")
-        raise ModuleError("Module is not loaded")
+        arg = arg.split(maxsplit=1)
+        if len(arg) == 2:
+            name, value = arg
+            if self.variables:
+                if name in self.variables:
+                    self.variables.set_var(name, value)
+                    print(f"Setting {name} -> {value}")
+                    return False
+                else:
+                    raise ArgError("No such variable")
+            raise ModuleError("Module is not loaded")
+        raise ArgError("Value is not set")
 
     def do_get(self, arg):
         """
@@ -148,3 +159,25 @@ class CRSConsole(Cmd):
         else:
             raise PathError("[!] No such directory")
         return False
+
+    def complete_cd(self, text, line, begidx, endidx):
+        founded = filter(lambda x: path.isdir(path.join(getcwd(), x)), listdir())
+        founded = list(filter(lambda x: x.startswith(text), founded))
+        return founded
+
+    def complete_use(self, text, line, begidx, endidx):
+        return self.complete_search(text, line, begidx, endidx)
+
+    def complete_search(self, text, line, begidx, endidx):
+        founded = list(filter(lambda x: x.startswith(text), self.modules_list))
+        return founded
+
+    def complete_set(self, text, line, begidx, endidx):
+        if " " not in line[:begidx].strip():
+            founded = []
+            if self.variables:
+                for varname in iter(self.variables):
+                    if varname.startswith(text):
+                        founded.append(varname)
+                return founded
+        return []

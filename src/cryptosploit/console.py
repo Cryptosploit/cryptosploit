@@ -160,17 +160,30 @@ class CRSConsole(Cmd):
             raise PathError("[!] No such directory")
         return False
 
+    def completedefault(self, text, line, begidx, endidx):
+        return self.explore_paths(line, False)
+
     def complete_cd(self, text, line, begidx, endidx):
-        text = (line.split(maxsplit=1) + [""])[1]
-        dirs = list(filter(lambda x: path.isdir(path.join(path.dirname(text), x)), listdir(path.dirname(text) or ".")))
-        founded = list(filter(lambda x: x.startswith(path.split(text)[-1]), dirs))
+        return self.explore_paths(line, True)
+
+    @staticmethod
+    def explore_paths(line, only_dirs):
+        text = (line.split(" "))[-1]
+        if text in ("..", "."):
+            return [path.join(".", ""), path.join("..", "")] if text == "." else [path.join("..", "")]
+        if only_dirs:
+            paths = filter(lambda x: path.isdir(path.join(path.dirname(text), x)), listdir(path.dirname(text) or "."))
+        else:
+            paths = listdir(path.dirname(text) or ".")
+        founded = list(map(lambda a: path.join(a, "") if path.isdir(a) else a,
+                           filter(lambda x: x.startswith(path.split(text)[-1]), paths)))
         return founded
 
     def complete_use(self, text, line, begidx, endidx):
         return self.complete_search(text, line, begidx, endidx)
 
     def complete_search(self, text, line, begidx, endidx):
-        founded = list(filter(lambda x: x.startswith(text), self.modules_list))
+        founded = list(filter(lambda x: x.startswith(text) and len(x.split(".")) > 1, self.modules_list))
         return founded
 
     def complete_set(self, text, line, begidx, endidx):
@@ -181,4 +194,5 @@ class CRSConsole(Cmd):
                     if varname.startswith(text):
                         founded.append(varname)
                 return founded
-        return []
+        else:
+            return self.explore_paths(line, False)

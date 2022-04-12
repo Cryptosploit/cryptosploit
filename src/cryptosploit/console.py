@@ -162,8 +162,7 @@ class CRSConsole(Cmd):
 
     def complete_cd(self, text, line, begidx, endidx):
         text = (line.split(maxsplit=1) + [""])[1]
-        dirs = [".", ".."] + list(filter(lambda x: path.isdir(path.join(path.dirname(text), x)),
-                                         listdir(path.dirname(text) or ".")))
+        dirs = list(filter(lambda x: path.isdir(path.join(path.dirname(text), x)), listdir(path.dirname(text) or ".")))
         founded = list(filter(lambda x: x.startswith(path.split(text)[-1]), dirs))
         return founded
 

@@ -161,8 +161,10 @@ class CRSConsole(Cmd):
         return False
 
     def complete_cd(self, text, line, begidx, endidx):
-        founded = filter(lambda x: path.isdir(path.join(getcwd(), x)), listdir())
-        founded = list(filter(lambda x: x.startswith(text), founded))
+        text = (line.split(maxsplit=1) + [""])[1]
+        dirs = [".", ".."] + list(filter(lambda x: path.isdir(path.join(path.dirname(text), x)),
+                                         listdir(path.dirname(text) or ".")))
+        founded = list(filter(lambda x: x.startswith(path.split(text)[-1]), dirs))
         return founded
 
     def complete_use(self, text, line, begidx, endidx):

@@ -34,12 +34,18 @@ class CRSConsole(Cmd):
         # package_version = loads(urlopen("https://pypi.org/pypi/cryptosploit_modules/json").read())["info"]["version"]
         package_version = local_version
         if local_version != package_version:
-            print("There is a new version of cryptosploit_modules, please run:")
+            print("A new version of cryptosploit_modules is available! Update with:")
             print("pip install cryptosploit_modules --upgrade")
 
     def preloop(self):
         self.check_update()
         self.load_modules()
+
+    def precmd(self, line: str) -> str:
+        if line == "EOF":
+            print()
+            return ""
+        return line
 
     def onecmd(self, line: str) -> bool:
         try:

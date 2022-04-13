@@ -23,11 +23,9 @@ class CRSConsole(Cmd):
 
     def load_modules(self):
         csmodule = get_loader("cryptosploit_modules")
-        self.modules_list = list(map(lambda x: x.split(".", 1)[1], (name for _, name, _ in
-                                                                    walk_packages(
-                                                                        [path.dirname(csmodule.path)],
-                                                                        csmodule.name + "."
-                                                                    ))))
+        self.modules_list = list(map(lambda x: x.split(".", 1)[1],
+                                     (name for _, name, ispkg in walk_packages(
+                                         [path.dirname(csmodule.path)], csmodule.name + ".") if ispkg)))
 
     def check_update(self):
         local_version = version("cryptosploit_modules")

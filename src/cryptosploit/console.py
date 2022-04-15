@@ -3,6 +3,7 @@ from importlib import import_module
 from os import path, chdir, listdir, getcwd
 from re import compile, error
 from subprocess import Popen, PIPE
+from traceback import format_exc
 from pkgutil import walk_packages, get_loader
 from importlib.metadata import version
 # from json import loads
@@ -49,6 +50,7 @@ class CRSConsole(Cmd):
         try:
             return super().onecmd(line)
         except CryptoException as err:
+            print(format_exc()) # to remove
             print(str(err))
             return False
 
@@ -141,6 +143,20 @@ class CRSConsole(Cmd):
             raise ModuleError("Module is not loaded")
         raise ArgError("Value is not set")
 
+    def do_unset(self, name):
+        """
+        Unset the value of a variable.
+        Example: unset ciphertext
+        """
+        if self.variables:
+            if name in self.variables:
+                self.variables.set_var(name, "")
+                print(f"Setting {name} -> None")
+                return False
+            else:
+                raise ArgError("No such variable")
+        raise ModuleError("Module is not loaded")
+
     def do_get(self, arg):
         """
         Print variables allowed to set.
@@ -200,3 +216,6 @@ class CRSConsole(Cmd):
                 return founded
         else:
             return self.explore_paths(line, False)
+
+    def complete_unset(self, text, line, begidx, endidx):
+        return self.complete_set(text, line, begidx, endidx)

@@ -1,21 +1,29 @@
 from cmd import Cmd
 from importlib import import_module
-from os import path, chdir, listdir, getcwd
+from os import path, chdir, listdir
 from re import compile, error
 from subprocess import Popen, PIPE
 from traceback import format_exc
 from pkgutil import walk_packages, get_loader
 from importlib.metadata import version
+
 # from json import loads
 # from urllib.request import urlopen
 
-from .exceptions import ArgError, CryptoException, PathError, ModuleError, UnknownCommandError
+from .exceptions import (
+    ArgError,
+    CryptoException,
+    PathError,
+    ModuleError,
+    UnknownCommandError,
+)
 
 
 class CRSConsole(Cmd):
     """
     Class of main console
     """
+
     prompt = "crsconsole> "
     intro = "Wellcome to CryptoSploit <3\nType help or ? to list commands.\n"
     module = None
@@ -24,9 +32,18 @@ class CRSConsole(Cmd):
 
     def load_modules(self):
         csmodule = get_loader("cryptosploit_modules")
-        self.modules_list = list(map(lambda x: x.split(".", 1)[1],
-                                     (name for _, name, ispkg in walk_packages(
-                                         [path.dirname(csmodule.path)], csmodule.name + ".") if ispkg)))
+        self.modules_list = list(
+            map(
+                lambda x: x.split(".", 1)[1],
+                (
+                    name
+                    for _, name, ispkg in walk_packages(
+                        [path.dirname(csmodule.path)], csmodule.name + "."
+                    )
+                    if ispkg
+                ),
+            )
+        )
 
     def check_update(self):
         local_version = version("cryptosploit_modules")
@@ -50,7 +67,7 @@ class CRSConsole(Cmd):
         try:
             return super().onecmd(line)
         except CryptoException as err:
-            print(format_exc()) # to remove
+            print(format_exc())  # to remove
             print(str(err))
             return False
 
@@ -66,7 +83,15 @@ class CRSConsole(Cmd):
         Any shell command.
         Example: ls -la
         """
-        proc = Popen(arg, stderr=PIPE, shell=True, stdin=PIPE, stdout=PIPE, universal_newlines=True, text=True)
+        proc = Popen(
+            arg,
+            stderr=PIPE,
+            shell=True,
+            stdin=PIPE,
+            stdout=PIPE,
+            universal_newlines=True,
+            text=True,
+        )
         print(f"[*] Executing '{arg}'")
         for line in iter(proc.stdout.readline, ""):
             print(line, end="")
@@ -190,20 +215,36 @@ class CRSConsole(Cmd):
     def explore_paths(line, only_dirs):
         text = (line.split(" "))[-1]
         if text in ("..", "."):
-            return [path.join(".", ""), path.join("..", "")] if text == "." else [path.join("..", "")]
+            return (
+                [path.join(".", ""), path.join("..", "")]
+                if text == "."
+                else [path.join("..", "")]
+            )
         if only_dirs:
-            paths = filter(lambda x: path.isdir(path.join(path.dirname(text), x)), listdir(path.dirname(text) or "."))
+            paths = filter(
+                lambda x: path.isdir(path.join(path.dirname(text), x)),
+                listdir(path.dirname(text) or "."),
+            )
         else:
             paths = listdir(path.dirname(text) or ".")
-        founded = list(map(lambda a: path.join(a, "") if path.isdir(a) else a,
-                           filter(lambda x: x.startswith(path.split(text)[-1]), paths)))
+        founded = list(
+            map(
+                lambda a: path.join(a, "") if path.isdir(a) else a,
+                filter(lambda x: x.startswith(path.split(text)[-1]), paths),
+            )
+        )
         return founded
 
     def complete_use(self, text, line, begidx, endidx):
         return self.complete_search(text, line, begidx, endidx)
 
     def complete_search(self, text, line, begidx, endidx):
-        founded = list(filter(lambda x: x.startswith(text) and len(x.split(".")) > 1, self.modules_list))
+        founded = list(
+            filter(
+                lambda x: x.startswith(text) and len(x.split(".")) > 1,
+                self.modules_list,
+            )
+        )
         return founded
 
     def complete_set(self, text, line, begidx, endidx):

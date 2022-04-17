@@ -67,7 +67,6 @@ class CRSConsole(Cmd):
         try:
             return super().onecmd(line)
         except CryptoException as err:
-            print(format_exc())  # to remove
             print(str(err))
             return False
 

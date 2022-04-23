@@ -1,6 +1,3 @@
-from sys import prefix
-
-
 class SGR:
     TEMPLATE = "\x1b[{}m"
     CLEAR = TEMPLATE.format("0")
@@ -61,9 +58,8 @@ class Printer:
     def error(*s, sep=" "):
         s = colorize_strings(
             colorize_strings("[!]", styles=[SGR.STYLES.BLINK]),
-            *s,
+            sep.join(s),
             fg=SGR.COLOR.FOREGROUND.RED,
-            sep=sep
         )
         print(s)
 

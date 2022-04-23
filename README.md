@@ -1,7 +1,3 @@
----
-title: 'Readme'
----
-
 Cryptosploit
 ===
 <p align="center">
@@ -15,7 +11,12 @@ Fully automated decryption/decoding/cracking tool using various modules.
 
 Table of Contents
 ---
-[TOC]
+- [Cryptosploit](#cryptosploit)
+  - [Table of Contents](#table-of-contents)
+  - [🔨 Installation Guide](#-installation-guide)
+  - [🤔 What is this?](#-what-is-this)
+  - [🏃‍♀️ Running Cryptosploit](#️-running-cryptosploit)
+  - [Modules](#modules)
 
 🔨 Installation Guide
 ---

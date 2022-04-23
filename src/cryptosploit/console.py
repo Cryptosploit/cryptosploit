@@ -7,10 +7,11 @@ from traceback import format_exc
 from pkgutil import walk_packages, get_loader
 from importlib.metadata import version
 
+
 # from json import loads
 # from urllib.request import urlopen
 
-from .cprint import colorize_strings, SGR
+from .cprint import colorize_strings, SGR, Printer
 from .exceptions import (
     ArgError,
     CryptoException,
@@ -26,7 +27,16 @@ class CRSConsole(Cmd):
     """
 
     prompt = "crsconsole> "
-    intro = "Wellcome to CryptoSploit <3\nType help or ? to list commands.\n"
+    intro = (
+        "Wellcome to CryptoSploit "
+        + colorize_strings("<3", fg=SGR.COLOR.FOREGROUND.RED)
+        + "\nType "
+        + colorize_strings("help", fg=SGR.COLOR.FOREGROUND.GREEN)
+        + " or "
+        + colorize_strings("?", fg=SGR.COLOR.FOREGROUND.GREEN)
+        + " to list commands.\n"
+    )
+
     module = None
     modules_list = None
     variables = None
@@ -51,8 +61,10 @@ class CRSConsole(Cmd):
         # package_version = loads(urlopen("https://pypi.org/pypi/cryptosploit_modules/json").read())["info"]["version"]
         package_version = local_version
         if local_version != package_version:
-            print("A new version of cryptosploit_modules is available! Update with:")
-            print("pip install cryptosploit_modules --upgrade")
+            Printer.info(
+                "A new version of cryptosploit_modules is available! Update with:"
+            )
+            Printer.info("pip install cryptosploit_modules --upgrade")
 
     def preloop(self):
         self.check_update()
@@ -68,7 +80,7 @@ class CRSConsole(Cmd):
         try:
             return super().onecmd(line)
         except CryptoException as err:
-            print(str(err))
+            Printer.error(str(err))
             return False
 
     def default(self, line: str) -> bool:
@@ -92,12 +104,12 @@ class CRSConsole(Cmd):
             universal_newlines=True,
             text=True,
         )
-        print(f"[*] Executing '{arg}'")
+        Printer.exec(f"Executing '{arg}'")
         for line in iter(proc.stdout.readline, ""):
             print(line, end="")
         return_code = proc.wait()
         if return_code == 127:
-            raise UnknownCommandError("[!] Unknown command")
+            raise UnknownCommandError("Unknown command")
         else:
             for line in iter(proc.stderr.readline, ""):
                 print(line, "\n")
@@ -113,11 +125,11 @@ class CRSConsole(Cmd):
             self.module = import_module("cryptosploit_modules." + module_path).module
             self.variables = self.module.env
             self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
-            print("Module loaded successfully")
+            Printer.info("Module loaded successfully")
         except ModuleNotFoundError:
-            raise ModuleError("[!] No such module")
+            raise ModuleError("No such module")
         except AttributeError:
-            raise ModuleError("[!] Not a module")
+            raise ModuleError("Not a module")
         return False
 
     def do_search(self, name):
@@ -129,7 +141,7 @@ class CRSConsole(Cmd):
         try:
             r = compile(pattern)
             found = list(filter(r.match, self.modules_list))
-            print("\n".join(found) if found else f"No results for {name}")
+            Printer.info("\n".join(found) if found else f"No results for {name}")
             return False
         except error:
             raise ArgError("Invalid regex")
@@ -161,7 +173,7 @@ class CRSConsole(Cmd):
             if self.variables:
                 if name in self.variables:
                     self.variables.set_var(name, value)
-                    print(f"Setting {name} -> {value}")
+                    Printer.info(f"Setting {name} -> {value}")
                     return False
                 else:
                     raise ArgError("No such variable")
@@ -176,7 +188,7 @@ class CRSConsole(Cmd):
         if self.variables:
             if name in self.variables:
                 self.variables.set_var(name, "")
-                print(f"Setting {name} -> None")
+                Printer.info(f"Setting {name} -> None")
                 return False
             else:
                 raise ArgError("No such variable")
@@ -197,12 +209,12 @@ class CRSConsole(Cmd):
         Wrapper over change directory command.
         Use like cd.
         """
-        print(f"[*] Executing cd {new_path}")
+        Printer.exec(f"Executing cd {new_path}")
         cwd = path.abspath(new_path)
         if path.exists(cwd):
             chdir(cwd)
         else:
-            raise PathError("[!] No such directory")
+            raise PathError("No such directory")
         return False
 
     def completedefault(self, text, line, begidx, endidx):

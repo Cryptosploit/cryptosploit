@@ -51,8 +51,8 @@ def colorize_strings(*strings, styles=[], fg="", bg="", sep=" "):
 class Printer:
     @staticmethod
     def info(*s, sep=" "):
-        prefix = colorize_strings("[>]", fg=SGR.COLOR.FOREGROUND.CYAN)
-        print(prefix, sep.join(s))
+        prefix = colorize_strings("[>]", sep.join(s), fg=SGR.COLOR.FOREGROUND.CYAN)
+        print(prefix)
 
     @staticmethod
     def error(*s, sep=" "):
@@ -65,5 +65,15 @@ class Printer:
 
     @staticmethod
     def exec(*s, sep=" "):
-        prefix = colorize_strings("[*]", fg=SGR.COLOR.FOREGROUND.GREEN)
-        print(prefix, sep.join(s))
+        prefix = colorize_strings("[*]", sep.join(s), fg=SGR.COLOR.FOREGROUND.YELLOW)
+        print(prefix)
+
+    @staticmethod
+    def positive(*s, sep=" "):
+        prefix = colorize_strings("[+]", sep.join(s), fg=SGR.COLOR.FOREGROUND.GREEN)
+        print(prefix)
+
+    @staticmethod
+    def negative(*s, sep=" "):
+        prefix = colorize_strings("[-]", sep.join(s), fg=SGR.COLOR.FOREGROUND.RED)
+        print(prefix)

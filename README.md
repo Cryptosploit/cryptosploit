@@ -44,7 +44,7 @@ Cryptosploit aims to be a tool to automate a lot of routine work with various sc
 ---
 Very simple way of usage:
 
-![gif](gif_images/cryptosploit.gif?raw=true)
+![gif image](gif_images/cryptosploit.gif?raw=true)
 
 
 Modules

@@ -10,6 +10,7 @@ from importlib.metadata import version
 # from json import loads
 # from urllib.request import urlopen
 
+from .cprint import colorize_strings, SGR
 from .exceptions import (
     ArgError,
     CryptoException,
@@ -111,7 +112,7 @@ class CRSConsole(Cmd):
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module
             self.variables = self.module.env
-            self.prompt = f"crsconsole ({module_path})> "
+            self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
             print("Module loaded successfully")
         except ModuleNotFoundError:
             raise ModuleError("[!] No such module")

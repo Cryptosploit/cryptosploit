@@ -20,12 +20,6 @@ Table of Contents
   - [🏃‍♀️ Running Cryptosploit](#️-running-cryptosploit)
   - [Modules](#modules)
 
-🔨 Installation Guide
----
-
-| <p align="center">🐍 Python |
-| --------------- |
-| `python3 -m pip install cryptosploit --upgrade` | 
 
 🤔 What is this?
 ---

@@ -23,14 +23,9 @@ Table of Contents
 🔨 Installation Guide
 ---
 
-| <p align="center"><a href="https://pypi.org/project/ciphey">🐍 Python |
+| <p align="center">🐍 Python |
 | --------------- |
-| <p align="center"><img src="https://github.com/Ciphey/Ciphey/raw/master/Pictures_for_README/python.png" /></p>   
 | `python3 -m pip install crypotsploit --upgrade` | 
-
-| Linux | Mac OS | Windows |
-| ----- | ------ | ------- |
-| ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ciphey/ciphey/Python%20application?label=Linux) | ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ciphey/ciphey/Python%20application?label=Mac%20OS) | ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ciphey/ciphey/Python%20application?label=Windows) |
 
 🤔 What is this?
 ---
@@ -47,9 +42,8 @@ Very simple way of usage:
 ![gif image](gif_images/cryptosploit.gif?raw=true)
 
 
-Modules
+[Modules](https://github.com/y73n0k/cryptosploit_modules)
 ---
 As you have already read, this tool is module-based, that's why it is still in development. We want to extend our module's database.
 
 Anybody can write their own module in any programming language and add it to cryptosploit using a very simple and convinient API in python.
-cp 

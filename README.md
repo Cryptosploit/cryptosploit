@@ -25,7 +25,7 @@ Table of Contents
 
 | <p align="center">🐍 Python |
 | --------------- |
-| `python3 -m pip install crypotsploit --upgrade` | 
+| `python3 -m pip install cryptosploit --upgrade` | 
 
 🤔 What is this?
 ---

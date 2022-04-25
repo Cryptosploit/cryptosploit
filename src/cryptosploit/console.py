@@ -1,12 +1,9 @@
 from cmd import Cmd
 from importlib import import_module
-from json import loads
 from os import path, chdir, listdir
 from re import compile, error
 from subprocess import Popen, PIPE
-from urllib.request import urlopen
 from pkgutil import walk_packages, get_loader
-from importlib.metadata import version
 
 from .banners import print_banner
 from .cprint import colorize_strings, SGR, Printer
@@ -54,19 +51,7 @@ class CRSConsole(Cmd):
             )
         )
 
-    def check_update(self):
-        local_version = version("cryptosploit_modules")
-        package_version = loads(
-            urlopen("https://pypi.org/pypi/cryptosploit_modules/json").read()
-        )["info"]["version"]
-        if local_version != package_version:
-            Printer.info(
-                "A new version of cryptosploit_modules is available! Update with:"
-            )
-            Printer.info("pip install cryptosploit_modules --upgrade")
-
     def preloop(self):
-        self.check_update()
         self.load_modules()
         print_banner()
 

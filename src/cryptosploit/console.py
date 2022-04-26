@@ -1,12 +1,12 @@
 from cmd import Cmd
 from importlib import import_module
-from json import loads
-from os import path, chdir, listdir
+from inspect import getfile
+import os
+from os import chdir, listdir
 from re import compile, error
 from subprocess import Popen, PIPE
-from urllib.request import urlopen
+from sys import path
 from pkgutil import walk_packages, get_loader
-from importlib.metadata import version
 
 from .banners import print_banner
 from .cprint import colorize_strings, SGR, Printer
@@ -47,28 +47,17 @@ class CRSConsole(Cmd):
                 (
                     name
                     for _, name, ispkg in walk_packages(
-                        [path.dirname(csmodule.path)], csmodule.name + "."
+                        [os.path.dirname(csmodule.path)], csmodule.name + "."
                     )
                     if ispkg
                 ),
             )
         )
 
-    def check_update(self):
-        local_version = version("cryptosploit_modules")
-        package_version = loads(
-            urlopen("https://pypi.org/pypi/cryptosploit_modules/json").read()
-        )["info"]["version"]
-        if local_version != package_version:
-            Printer.info(
-                "A new version of cryptosploit_modules is available! Update with:"
-            )
-            Printer.info("pip install cryptosploit_modules --upgrade")
-
     def preloop(self):
-        self.check_update()
         self.load_modules()
         print_banner()
+        path.insert(0, "")
 
     def precmd(self, line: str) -> str:
         if line == "EOF":
@@ -123,6 +112,13 @@ class CRSConsole(Cmd):
         """
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module
+            venv_path = os.path.join(os.path.dirname(getfile(self.module.__class__)), "venv")
+            for root, dirs, _ in os.walk(venv_path):
+                if "site-packages" in dirs:
+                    path[0] = os.path.join(root, "site-packages")
+                    break
+            else:
+                path[0] = ""
             self.variables = self.module.env
             self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
             Printer.info("Module loaded successfully")
@@ -210,8 +206,8 @@ class CRSConsole(Cmd):
         Use like cd.
         """
         Printer.exec(f"Executing cd {new_path}")
-        cwd = path.abspath(new_path)
-        if path.exists(cwd):
+        cwd = os.path.abspath(new_path)
+        if os.path.exists(cwd):
             chdir(cwd)
         else:
             raise PathError("No such directory")
@@ -228,21 +224,21 @@ class CRSConsole(Cmd):
         text = (line.split(" "))[-1]
         if text in ("..", "."):
             return (
-                [path.join(".", ""), path.join("..", "")]
+                [os.path.join(".", ""), os.path.join("..", "")]
                 if text == "."
-                else [path.join("..", "")]
+                else [os.path.join("..", "")]
             )
         if only_dirs:
             paths = filter(
-                lambda x: path.isdir(path.join(path.dirname(text), x)),
-                listdir(path.dirname(text) or "."),
+                lambda x: os.path.isdir(os.path.join(os.path.dirname(text), x)),
+                listdir(os.path.dirname(text) or "."),
             )
         else:
-            paths = listdir(path.dirname(text) or ".")
+            paths = listdir(os.path.dirname(text) or ".")
         founded = list(
             map(
-                lambda a: path.join(a, "") if path.isdir(a) else a,
-                filter(lambda x: x.startswith(path.split(text)[-1]), paths),
+                lambda a: os.path.join(a, "") if os.path.isdir(a) else a,
+                filter(lambda x: x.startswith(os.path.split(text)[-1]), os.paths),
             )
         )
         return founded

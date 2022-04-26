@@ -3,9 +3,7 @@ Cryptosploit
 <p align="center">
   <img src="https://img.shields.io/github/stars/SNESEAR/cryptosploit.svg">
   <img src="https://img.shields.io/github/issues/SNESEAR/cryptosploit.svg">
-  <img src="https://img.shields.io/github/license/SNESEAR/cryptosploit.svg">
-  <!-- <a href="https://pypi.org/project/cryptosploit/"><img src="https://img.shields.io/pypi/v/cryptosploit.svg"></a> -->
-  
+  <img src="https://img.shields.io/github/license/SNESEAR/cryptosploit.svg"> 
 
 <p>
 Fully automated decryption/decoding/cracking tool using various modules.

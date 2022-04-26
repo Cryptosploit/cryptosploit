@@ -1,28 +1,18 @@
 class CryptoException(Exception):
-    """
-    Base application exception.
-    """
+    """Base application exception."""
 
 
 class ArgError(CryptoException):
-    """
-    Exception raised for errors in the input command.
-    """
+    """Exception raised for errors in the input command."""
 
 
 class PathError(CryptoException):
-    """
-    Exception raised for errors in os paths.
-    """
+    """Exception raised for errors in os paths."""
 
 
 class ModuleError(CryptoException):
-    """
-    Exception raised for errors in modules.
-    """
+    """Exception raised for errors in modules."""
 
 
 class UnknownCommandError(CryptoException):
-    """
-    Exception raised for unknown commands.
-    """
+    """Exception raised for unknown commands."""

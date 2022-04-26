@@ -1,4 +1,5 @@
 class SGR:
+    """Styling class with constants."""
     TEMPLATE = "\x1b[{}m"
     CLEAR = TEMPLATE.format("0")
 
@@ -37,6 +38,11 @@ class SGR:
 
 
 def colorize_strings(*strings, styles=[], fg="", bg="", sep=" "):
+    """
+    With colorize_strings you can change
+    strings style, color (fg), color of background (bg).
+    Use SGR class for styling.
+    """
     template = ""
     if styles:
         template += SGR.format(";".join(styles))
@@ -49,31 +55,40 @@ def colorize_strings(*strings, styles=[], fg="", bg="", sep=" "):
 
 
 class Printer:
+    """
+    Class for printing of any information.
+    Use it to colorize the output of your module.
+    """
     @staticmethod
-    def info(*s, sep=" "):
-        prefix = colorize_strings("[>]", sep.join(s), fg=SGR.COLOR.FOREGROUND.CYAN)
+    def info(*strings, sep=" "):
+        """Print cyan string with '[>]' prefix."""
+        prefix = colorize_strings("[>]", sep.join(strings), fg=SGR.COLOR.FOREGROUND.CYAN)
         print(prefix)
 
     @staticmethod
-    def error(*s, sep=" "):
+    def error(*strings, sep=" "):
+        """Print red string with '[!]' prefix."""
         s = colorize_strings(
             colorize_strings("[!]", styles=[SGR.STYLES.BLINK]),
-            sep.join(s),
+            sep.join(strings),
             fg=SGR.COLOR.FOREGROUND.RED,
         )
         print(s)
 
     @staticmethod
-    def exec(*s, sep=" "):
-        prefix = colorize_strings("[*]", sep.join(s), fg=SGR.COLOR.FOREGROUND.YELLOW)
+    def exec(*strings, sep=" "):
+        """Print yellow string with '[*]' prefix."""
+        prefix = colorize_strings("[*]", sep.join(strings), fg=SGR.COLOR.FOREGROUND.YELLOW)
         print(prefix)
 
     @staticmethod
-    def positive(*s, sep=" "):
-        prefix = colorize_strings("[+]", sep.join(s), fg=SGR.COLOR.FOREGROUND.GREEN)
+    def positive(*strings, sep=" "):
+        """Print green string with '[+]' prefix."""
+        prefix = colorize_strings("[+]", sep.join(strings), fg=SGR.COLOR.FOREGROUND.GREEN)
         print(prefix)
 
     @staticmethod
-    def negative(*s, sep=" "):
-        prefix = colorize_strings("[-]", sep.join(s), fg=SGR.COLOR.FOREGROUND.RED)
+    def negative(*strings, sep=" "):
+        """Print red string with '[-]' prefix."""
+        prefix = colorize_strings("[-]", sep.join(strings), fg=SGR.COLOR.FOREGROUND.RED)
         print(prefix)

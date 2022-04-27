@@ -238,7 +238,7 @@ class CRSConsole(Cmd):
         founded = list(
             map(
                 lambda a: os.path.join(a, "") if os.path.isdir(a) else a,
-                filter(lambda x: x.startswith(os.path.split(text)[-1]), os.paths),
+                filter(lambda x: x.startswith(os.path.split(text)[-1]), paths),
             )
         )
         return founded

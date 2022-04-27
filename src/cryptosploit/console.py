@@ -38,6 +38,7 @@ class CRSConsole(Cmd):
     module = None
     modules_list = None
     variables = None
+    shell_proc: Popen | None = None
 
     def load_modules(self):
         csmodule = get_loader("cryptosploit_modules")
@@ -71,6 +72,9 @@ class CRSConsole(Cmd):
         except CryptoException as err:
             Printer.error(str(err))
             return False
+        except KeyboardInterrupt:
+            if self.module:
+                self.module.kill_proc()
 
     def default(self, line: str) -> bool:
         self.do_shell(line)
@@ -84,7 +88,7 @@ class CRSConsole(Cmd):
         Any shell command.
         Example: ls -la
         """
-        proc = Popen(
+        self.shell_proc = Popen(
             arg,
             stderr=PIPE,
             shell=True,
@@ -94,15 +98,15 @@ class CRSConsole(Cmd):
             text=True,
         )
         Printer.exec(f"Executing '{arg}'")
-        for line in iter(proc.stdout.readline, ""):
+        for line in iter(self.shell_proc.stdout.readline, ""):
             print(line, end="")
-        return_code = proc.wait()
+        return_code = self.shell_proc.wait()
         if return_code == 127:
             raise UnknownCommandError("Unknown command")
         else:
-            for line in iter(proc.stderr.readline, ""):
+            for line in iter(self.shell_proc.stderr.readline, ""):
                 print(line, "\n")
-            proc.stderr.close()
+            self.shell_proc.stderr.close()
         return False
 
     def do_use(self, module_path: str):
@@ -238,7 +242,7 @@ class CRSConsole(Cmd):
         founded = list(
             map(
                 lambda a: os.path.join(a, "") if os.path.isdir(a) else a,
-                filter(lambda x: x.startswith(os.path.split(text)[-1]), os.paths),
+                filter(lambda x: x.startswith(os.path.split(text)[-1]), paths),
             )
         )
         return founded

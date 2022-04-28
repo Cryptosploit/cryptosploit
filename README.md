@@ -1,5 +1,12 @@
 Cryptosploit
 ===
+<br>
+
+<p align="center">
+<img src="images/cryptosploit_logo.png" width="550"/>
+</p>
+<br>
+
 <p align="center">
   <img src="https://img.shields.io/github/stars/SNESEAR/cryptosploit.svg">
   <img src="https://img.shields.io/github/issues/SNESEAR/cryptosploit.svg">
@@ -16,7 +23,7 @@ Table of Contents
   - [🔨 Installation Guide](#-installation-guide)
   - [🤔 What is this?](#-what-is-this)
   - [🏃‍♀️ Running Cryptosploit](#️-running-cryptosploit)
-  - [Modules](#modules)
+  - [💻 Modules](#modules)
 
 🔨 Installation Guide
 ---
@@ -68,7 +75,7 @@ crsconsole> help search
 ```
 <br>
 
-You can search modules by regular expressions.
+You can search modules by regular expressions
 ```
 crsconsole> search hash
 [>] hashes
@@ -83,7 +90,7 @@ crsconsole> use hashes.cracker
 ```
 <br>
 
-Get and set module varibles
+Get and set module variables
 ```
 crsconsole (hashes.cracker)> get
 ╒════════════════════╤═════════╤══════════════════════════════════════════════════╕
@@ -122,14 +129,15 @@ crsconsole (hashes.cracker)> set extra_flags -a 3 -m 0 hash_to_crack ?a?a?a?a?a?
 ```
 <br>
 
-Type run to execute module functionality.
+Type run to execute module functionality
 
 ```
 crsconsole (hashes.cracker)> run
 ```
 
-[Modules](https://github.com/y73n0k/cryptosploit_modules)
+💻 [Modules](https://github.com/y73n0k/cryptosploit_modules)
 ---
 As you have already read, this tool is module-based, that's why it is still in development. We want to extend our module's database.
 
 Anybody can write their own module in any programming language and add it to cryptosploit using a very simple and convenient API in python.
+Visit our [modules github page](https://github.com/y73n0k/cryptosploit_modules) to get details about contributing.

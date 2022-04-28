@@ -51,7 +51,7 @@ def colorize_strings(*strings, styles=[], fg="", bg="", sep=" "):
     if bg:
         template += SGR.format(bg)
     template += "{}" + SGR.CLEAR
-    return template.format(sep).join(map(template.format, strings))
+    return template.format(sep.join(map(template.format, strings)))
 
 
 class Printer:

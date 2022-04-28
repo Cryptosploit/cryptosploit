@@ -37,11 +37,12 @@ $ echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
 
 🤔 What is this?
 ---
-Cryptosploit is a new module-based cryptographic tool. You can use it for solving different cryptographic tasks.
+Cryptosploit is a new module-based cryptographic tool, it designed to become **a tool for automating a lot of routine work with various scripts**. You can use it to solve different cryptographic tasks.
 
-In fact, it is a big library of cryptographic tools, you don't need in a big folder with gigabytes of cryptographic tools. Everything you need can be found here.
+In fact, it is a large library of tools. **You don't need a directory with gigabytes of cryptographic tools**.
+You mustn't keep in mind all the flags and modes in the cli tools anymore.
+Cryptosploit will do it for you :З
 
-Cryptosploit aims to be a tool to automate a lot of routine work with various scripts.
 
 🏃‍♀️ Running Cryptosploit
 ---

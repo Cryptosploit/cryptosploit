@@ -14,6 +14,8 @@ Cryptosploit
 
 <p>
 Fully automated decryption/decoding/cracking tool using various modules.
+
+To use it, you need to have basic knowledge of cryptography.
 </p>
 
 Table of Contents

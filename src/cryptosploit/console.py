@@ -75,6 +75,12 @@ class CRSConsole(Cmd):
         except KeyboardInterrupt:
             if self.module:
                 self.module.kill_proc()
+            if self.shell_proc:
+                self.shell_proc.terminate()
+                self.shell_proc.kill()
+                self.shell_proc = None
+            else:
+                return self.do_exit()
 
     def default(self, line: str) -> bool:
         self.do_shell(line)

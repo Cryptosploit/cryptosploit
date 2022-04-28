@@ -152,7 +152,7 @@ class CRSConsole(Cmd):
         except error:
             raise ArgError("Invalid regex")
 
-    def do_exit(self, arg):
+    def do_exit(self, arg=""):
         """
         Just an exit command.
         Just type exit.

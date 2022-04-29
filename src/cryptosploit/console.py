@@ -73,14 +73,13 @@ class CRSConsole(Cmd):
             Printer.error(str(err))
             return False
         except KeyboardInterrupt:
+            print()
             if self.module:
                 self.module.kill_proc()
             if self.shell_proc:
                 self.shell_proc.terminate()
                 self.shell_proc.kill()
                 self.shell_proc = None
-            else:
-                return self.do_exit()
 
     def default(self, line: str) -> bool:
         self.do_shell(line)
@@ -96,23 +95,18 @@ class CRSConsole(Cmd):
         """
         self.shell_proc = Popen(
             arg,
-            stderr=PIPE,
             shell=True,
-            stdin=PIPE,
-            stdout=PIPE,
+            stdin=self.stdin,
+            stdout=self.stdout,
+            stderr=PIPE,
             universal_newlines=True,
-            text=True,
         )
         Printer.exec(f"Executing '{arg}'")
-        for line in iter(self.shell_proc.stdout.readline, ""):
-            print(line, end="")
         return_code = self.shell_proc.wait()
         if return_code == 127:
             raise UnknownCommandError("Unknown command")
-        else:
-            for line in iter(self.shell_proc.stderr.readline, ""):
-                print(line, "\n")
-            self.shell_proc.stderr.close()
+        for line in iter(self.shell_proc.stderr.readline, ""):
+            print(line, end="")
         return False
 
     def do_use(self, module_path: str):
@@ -122,7 +116,9 @@ class CRSConsole(Cmd):
         """
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module
-            venv_path = os.path.join(os.path.dirname(getfile(self.module.__class__)), "venv")
+            venv_path = os.path.join(
+                os.path.dirname(getfile(self.module.__class__)), "venv"
+            )
             for root, dirs, _ in os.walk(venv_path):
                 if "site-packages" in dirs:
                     path[0] = os.path.join(root, "site-packages")

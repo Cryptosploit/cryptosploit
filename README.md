@@ -31,7 +31,7 @@ Table of Contents
 ---
   
 ```sh
-$ sudo pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
+sudo pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
 ```
 
 We use `sudo` to allow `setup.py` to add cryptosploit to `/usr/bin`.
@@ -40,8 +40,8 @@ We use `sudo` to allow `setup.py` to add cryptosploit to `/usr/bin`.
 Alternatively, you can install cryptosploit without sudo and modify your $PATH.
 
 ```sh
-$ pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
-$ echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
+pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
+echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
 ```
 
 🤔 What is this?

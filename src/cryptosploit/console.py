@@ -106,12 +106,7 @@ class CRSConsole(Cmd):
         if return_code == 127:
             raise UnknownCommandError("Unknown command")
         for line in iter(self.shell_proc.stderr.readline, ""):
-<<<<<<< HEAD
             print(line, end="")
-=======
-            print(line, "\n")
-        self.shell_proc.stderr.close()
->>>>>>> e2ad0466d451535d4aff9342189a2ec8c17fedca
         return False
 
     def do_use(self, module_path: str):

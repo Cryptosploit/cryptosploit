@@ -13,7 +13,7 @@ Cryptosploit
   <img src="https://img.shields.io/github/license/SNESEAR/cryptosploit.svg"> 
 
 <p>
-Fully automated decryption/decoding/cracking tool using various modules.
+A decryption/decoding/cracking tool using various modules.
 
 To use it, you need to have basic knowledge of cryptography.
 </p>

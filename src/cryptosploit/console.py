@@ -109,10 +109,9 @@ class CRSConsole(Cmd):
         return_code = self.shell_proc.wait()
         if return_code == 127:
             raise UnknownCommandError("Unknown command")
-        else:
-            for line in iter(self.shell_proc.stderr.readline, ""):
-                print(line, "\n")
-            self.shell_proc.stderr.close()
+        for line in iter(self.shell_proc.stderr.readline, ""):
+            print(line, "\n")
+        self.shell_proc.stderr.close()
         return False
 
     def do_use(self, module_path: str):
@@ -181,8 +180,7 @@ class CRSConsole(Cmd):
                     self.variables.set_var(name, value)
                     Printer.info(f"Setting {name} -> {value}")
                     return False
-                else:
-                    raise ArgError("No such variable")
+                raise ArgError("No such variable")
             raise ModuleError("Module is not loaded")
         raise ArgError("Value is not set")
 
@@ -196,8 +194,7 @@ class CRSConsole(Cmd):
                 self.variables.set_var(name, "")
                 Printer.info(f"Setting {name} -> None")
                 return False
-            else:
-                raise ArgError("No such variable")
+            raise ArgError("No such variable")
         raise ModuleError("Module is not loaded")
 
     def do_get(self, arg):

@@ -3,7 +3,6 @@ import os
 from cmd import Cmd
 from importlib import import_module
 from importlib.util import find_spec
-from inspect import getfile
 from re import compile, error
 from subprocess import Popen, PIPE
 from sys import path
@@ -51,7 +50,7 @@ class CRSConsole(Cmd):
                     for _, name, ispkg in walk_packages(
                         [os.path.dirname(csmodule.path)], csmodule.name + "."
                     )
-                    if ispkg
+                    if ispkg and hasattr(import_module(name), "module")
                 ),
             )
         )
@@ -59,7 +58,9 @@ class CRSConsole(Cmd):
     def preloop(self):
         self.load_modules()
         print_banner()
-        venv_path = os.path.join(find_spec("cryptosploit_modules").submodule_search_locations[0], "venv")
+        venv_path = os.path.join(
+            find_spec("cryptosploit_modules").submodule_search_locations[0], "venv"
+        )
         for root, dirs, _ in os.walk(venv_path):
             if "site-packages" in dirs:
                 path.insert(0, os.path.join(root, "site-packages"))
@@ -120,7 +121,8 @@ class CRSConsole(Cmd):
         Example: use symmetric.rot
         """
         try:
-            self.module = import_module("cryptosploit_modules." + module_path).module
+            Printer.info("Trying to load module")
+            self.module = import_module("cryptosploit_modules." + module_path).module()
             self.variables = self.module.env
             self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
             Printer.info("Module loaded successfully")
@@ -139,7 +141,10 @@ class CRSConsole(Cmd):
         try:
             r = compile(pattern)
             found = list(filter(r.match, self.modules_list))
-            Printer.info("\n".join(found) if found else f"No results for {name}")
+            if found:
+                Printer.info("Founded:\n", "\n".join(found), sep="")
+            else:
+                Printer.negative(f"No results for {name}")
             return False
         except error:
             raise ArgError("Invalid regex")

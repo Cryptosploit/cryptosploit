@@ -1,5 +1,6 @@
 from cmd import Cmd
 from importlib import import_module
+from importlib.util import find_spec
 from inspect import getfile
 import os
 from os import chdir, listdir
@@ -58,7 +59,7 @@ class CRSConsole(Cmd):
     def preloop(self):
         self.load_modules()
         print_banner()
-        path.insert(0, "")
+        path.insert(0, find_spec("cryptosploit_modules").submodule_search_locations[0])
 
     def precmd(self, line: str) -> str:
         if line == "EOF":

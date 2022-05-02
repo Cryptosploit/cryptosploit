@@ -120,16 +120,17 @@ class CRSConsole(Cmd):
         Load module
         Example: use symmetric.rot
         """
+        Printer.info(f"Loading module...")
         try:
-            Printer.info(f"Loading module...")
             self.module = import_module("cryptosploit_modules." + module_path).module()
-            self.variables = self.module.env
-            self.prompt = f"crsconsole ({colorize_strings(f'{module_path}', fg=SGR.COLOR.FOREGROUND.PURPLE)})> "
-            Printer.info("Module loaded successfully")
         except ModuleNotFoundError:
             raise ModuleError("No such module")
         except AttributeError:
             raise ModuleError("Not a module")
+        else:
+            self.variables = self.module.env
+            self.prompt = f"crsconsole ({colorize_strings(f'{module_path}', fg=SGR.COLOR.FOREGROUND.PURPLE)})> "
+            Printer.info("Module loaded successfully")
         return False
 
     def do_search(self, name):
@@ -140,14 +141,15 @@ class CRSConsole(Cmd):
         pattern = f".*{name}.*"
         try:
             r = compile(pattern)
+        except error:
+            raise ArgError("Invalid regex")
+        else:
             found = list(filter(r.match, self.modules_list))
             if found:
                 Printer.info("Founded:\n", "\n".join(found), sep="")
             else:
                 Printer.negative(f"No results for {name}")
             return False
-        except error:
-            raise ArgError("Invalid regex")
 
     def do_exit(self, arg=""):
         """

@@ -56,8 +56,6 @@ class CRSConsole(Cmd):
         )
 
     def preloop(self):
-        self.load_modules()
-        print_banner()
         venv_path = os.path.join(
             find_spec("cryptosploit_modules").submodule_search_locations[0], "venv"
         )
@@ -65,6 +63,8 @@ class CRSConsole(Cmd):
             if "site-packages" in dirs:
                 path.insert(0, os.path.join(root, "site-packages"))
                 break
+        self.load_modules()
+        print_banner()
 
     def precmd(self, line: str) -> str:
         if line == "EOF":

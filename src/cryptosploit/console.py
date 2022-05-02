@@ -121,10 +121,10 @@ class CRSConsole(Cmd):
         Example: use symmetric.rot
         """
         try:
-            Printer.info("Trying to load module")
+            Printer.info(f"Loading module...")
             self.module = import_module("cryptosploit_modules." + module_path).module()
             self.variables = self.module.env
-            self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
+            self.prompt = f"crsconsole ({colorize_strings(f'{module_path}', fg=SGR.COLOR.FOREGROUND.PURPLE)})> "
             Printer.info("Module loaded successfully")
         except ModuleNotFoundError:
             raise ModuleError("No such module")

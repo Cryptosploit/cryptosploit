@@ -1,9 +1,9 @@
+import os
+
 from cmd import Cmd
 from importlib import import_module
 from importlib.util import find_spec
 from inspect import getfile
-import os
-from os import chdir, listdir
 from re import compile, error
 from subprocess import Popen, PIPE
 from sys import path
@@ -59,7 +59,11 @@ class CRSConsole(Cmd):
     def preloop(self):
         self.load_modules()
         print_banner()
-        path.insert(0, find_spec("cryptosploit_modules").submodule_search_locations[0])
+        venv_path = os.path.join(find_spec("cryptosploit_modules").submodule_search_locations[0], "venv")
+        for root, dirs, _ in os.walk(venv_path):
+            if "site-packages" in dirs:
+                path.insert(0, os.path.join(root, "site-packages"))
+                break
 
     def precmd(self, line: str) -> str:
         if line == "EOF":
@@ -117,15 +121,6 @@ class CRSConsole(Cmd):
         """
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module
-            venv_path = os.path.join(
-                os.path.dirname(getfile(self.module.__class__)), "venv"
-            )
-            for root, dirs, _ in os.walk(venv_path):
-                if "site-packages" in dirs:
-                    path[0] = os.path.join(root, "site-packages")
-                    break
-            else:
-                path[0] = ""
             self.variables = self.module.env
             self.prompt = f"crsconsole {colorize_strings(f'({module_path})', fg=SGR.COLOR.FOREGROUND.PURPLE)}> "
             Printer.info("Module loaded successfully")
@@ -213,7 +208,7 @@ class CRSConsole(Cmd):
         Printer.exec(f"Executing cd {new_path}")
         cwd = os.path.abspath(new_path)
         if os.path.exists(cwd):
-            chdir(cwd)
+            os.chdir(cwd)
         else:
             raise PathError("No such directory")
         return False
@@ -236,10 +231,10 @@ class CRSConsole(Cmd):
         if only_dirs:
             paths = filter(
                 lambda x: os.path.isdir(os.path.join(os.path.dirname(text), x)),
-                listdir(os.path.dirname(text) or "."),
+                os.listdir(os.path.dirname(text) or "."),
             )
         else:
-            paths = listdir(os.path.dirname(text) or ".")
+            paths = os.listdir(os.path.dirname(text) or ".")
         founded = list(
             map(
                 lambda a: os.path.join(a, "") if os.path.isdir(a) else a,

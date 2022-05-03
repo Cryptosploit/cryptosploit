@@ -1,9 +1,9 @@
+import re
 import os
 
 from cmd import Cmd
 from importlib import import_module
 from importlib.util import find_spec
-from re import compile, error
 from subprocess import Popen, PIPE
 from sys import path
 from pkgutil import walk_packages, get_loader
@@ -40,7 +40,7 @@ class CRSConsole(Cmd):
     variables = None
     shell_proc: Popen | None = None
 
-    def load_modules(self):
+    def __load_modules(self):
         csmodule = get_loader("cryptosploit_modules")
         self.modules_list = list(
             map(
@@ -63,7 +63,7 @@ class CRSConsole(Cmd):
             if "site-packages" in dirs:
                 path.insert(0, os.path.join(root, "site-packages"))
                 break
-        self.load_modules()
+        self.__load_modules()
         print_banner()
 
     def precmd(self, line: str) -> str:
@@ -120,13 +120,13 @@ class CRSConsole(Cmd):
         Load module
         Example: use symmetric.rot
         """
-        Printer.info(f"Loading module...")
+        Printer.info("Loading module...")
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module()
-        except (ModuleNotFoundError, TypeError):
-            raise ModuleError("No such module")
-        except AttributeError:
-            raise ModuleError("Not a module")
+        except (ModuleNotFoundError, TypeError) as err:
+            raise ModuleError("No such module") from err
+        except AttributeError as err:
+            raise ModuleError("Not a module") from err
         else:
             self.variables = self.module.env
             self.prompt = f"crsconsole ({colorize_strings(f'{module_path}', fg=SGR.COLOR.FOREGROUND.PURPLE)})> "
@@ -140,9 +140,9 @@ class CRSConsole(Cmd):
         """
         pattern = f".*{name}.*"
         try:
-            r = compile(pattern)
-        except error:
-            raise ArgError("Invalid regex")
+            r = re.compile(pattern)
+        except re.error as err:
+            raise ArgError("Invalid regex") from err
         else:
             found = list(filter(r.match, self.modules_list))
             if found:

@@ -123,7 +123,7 @@ class CRSConsole(Cmd):
         Printer.info(f"Loading module...")
         try:
             self.module = import_module("cryptosploit_modules." + module_path).module()
-        except ModuleNotFoundError:
+        except (ModuleNotFoundError, TypeError):
             raise ModuleError("No such module")
         except AttributeError:
             raise ModuleError("Not a module")

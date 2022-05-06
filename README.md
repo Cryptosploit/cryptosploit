@@ -142,4 +142,4 @@ crsconsole (hashes.cracker)> run
 As you have already read, this tool is module-based, that's why it is still in development. We want to extend our module's database.
 
 Anybody can write their own module in any programming language and add it to cryptosploit using a very simple and convenient API in python.
-Visit our [modules github page](https://github.com/y73n0k/cryptosploit_modules) to get details about contributing.
+Visit our [modules github wiki](https://github.com/y73n0k/cryptosploit_modules/wiki) to get details about module writing.

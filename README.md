@@ -27,9 +27,25 @@ Table of Contents
   - [🏃‍♀️ Running Cryptosploit](#️-running-cryptosploit)
   - [💻 Modules](#modules)
 
-🔨 Installation Guide
----
-  
+## 🔨 Installation Guide
+
+We recommend you to install cryptosploit in a **python virtual environment**, but you can also install cryptosploit on the main system.
+
+<br>
+
+### With python virtual environment
+
+```sh
+python -m venv venv
+source venv/bin/activate
+pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
+deactivate
+```
+
+<br>
+
+### On main system with sudo
+
 ```sh
 sudo pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
 ```
@@ -37,12 +53,16 @@ sudo pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
 We use `sudo` to allow `setup.py` to add cryptosploit to `/usr/bin`.
 
 <br>
+
+### On main system
+
 Alternatively, you can install cryptosploit without sudo and modify your $PATH.
 
 ```sh
 pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
 echo "export PATH=$PATH:~/.local/bin" >> ~/.bashrc
 ```
+
 
 🤔 What is this?
 ---

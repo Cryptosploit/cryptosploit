@@ -100,7 +100,7 @@ crsconsole> help search
 You can search modules by regular expressions
 ```
 crsconsole> search hash
-[>] hashes
+[>] Founded:
 hashes.cracker
 ```
 <br>

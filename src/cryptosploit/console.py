@@ -42,27 +42,16 @@ class CRSConsole(Cmd):
 
     def __load_modules(self):
         csmodule = get_loader("cryptosploit_modules")
-        self.modules_list = list(
-            map(
-                lambda x: x.split(".", 1)[1],
-                (
-                    name
-                    for _, name, ispkg in walk_packages(
-                        [os.path.dirname(csmodule.path)], csmodule.name + "."
-                    )
-                    if ispkg and hasattr(import_module(name), "module")
-                ),
-            )
-        )
+        self.modules_list = []
+        for ff, name, ispkg in walk_packages([os.path.dirname(csmodule.path)], csmodule.name + "."):
+            if ispkg:
+                path[4] = os.path.join(ff.path, name.rsplit(".", 1)[-1], "site-packages/")
+                if hasattr(import_module(name), "module"):
+                    self.modules_list.append(name.split(".", 1)[1])
+        path[4] = ""
 
     def preloop(self):
-        venv_path = os.path.join(
-            find_spec("cryptosploit_modules").submodule_search_locations[0], "venv"
-        )
-        for root, dirs, _ in os.walk(venv_path):
-            if "site-packages" in dirs:
-                path.insert(0, os.path.join(root, "site-packages"))
-                break
+        path.insert(4, "")
         self.__load_modules()
         print_banner()
 
@@ -104,15 +93,12 @@ class CRSConsole(Cmd):
             shell=True,
             stdin=self.stdin,
             stdout=self.stdout,
-            stderr=PIPE,
+            stderr=self.stdout,
             universal_newlines=True,
         )
         Printer.exec(f"Executing '{arg}'")
-        return_code = self.shell_proc.wait()
-        if return_code == 127:
-            raise UnknownCommandError("Unknown command")
-        for line in iter(self.shell_proc.stderr.readline, ""):
-            print(line, end="")
+        self.shell_proc.wait()
+        print()
         return False
 
     def do_use(self, module_path: str):
@@ -122,7 +108,11 @@ class CRSConsole(Cmd):
         """
         Printer.info("Loading module...")
         try:
-            self.module = import_module("cryptosploit_modules." + module_path).module()
+            module_obj = import_module("cryptosploit_modules." + module_path)
+            packages_path = os.path.join(module_obj.__path__[0], "site-packages")
+            if os.path.isdir(packages_path):
+                path[4] = packages_path
+            self.module = module_obj.module()
         except (ModuleNotFoundError, TypeError) as err:
             raise ModuleError("No such module") from err
         except AttributeError as err:
@@ -131,7 +121,7 @@ class CRSConsole(Cmd):
             self.variables = self.module.env
             self.prompt = f"crsconsole ({colorize_strings(f'{module_path}', fg=SGR.COLOR.FOREGROUND.PURPLE)})> "
             Printer.info("Module loaded successfully")
-        return False
+            return False
 
     def do_search(self, name):
         """

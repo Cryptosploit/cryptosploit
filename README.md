@@ -44,16 +44,6 @@ deactivate
 
 <br>
 
-### On main system with sudo
-
-```sh
-sudo pip install git+https://github.com/SNESEAR/cryptosploit.git --upgrade
-```
-
-We use `sudo` to allow `setup.py` to add cryptosploit to `/usr/bin`.
-
-<br>
-
 ### On main system
 
 Alternatively, you can install cryptosploit without sudo and modify your $PATH.
